@@ -9,14 +9,14 @@ using namespace std;
 
 static const string SEPERATOR = "#//#";
 static const string file_name = "clients data file.txt";
-
+enum enReadMenuOption { Show_Client_List=1,Add_New_Client,Delete_Client, Update_Client_Info,Find_Client,Exit};
 struct stClientData
 {
     string account_number;
     string pin_code;
     string name;
     string phone;
-    double account_balance;
+    double account_balance=0;
     bool mark_is_deleted = false;
 };
 
@@ -145,9 +145,10 @@ bool FindClientByAccountNumber(string account_number, vector<stClientData> vClie
 stClientData ReadClientData()
 {
     stClientData client_data;
+    vector<stClientData> vClientData = LoadClientDataFromFile();
     cout << "Enter Account Number? ";
     getline(cin >> ws, client_data.account_number);
-    while (FindClientByAccountNumber(client_data.account_number, LoadClientDataFromFile(), client_data))
+    while (FindClientByAccountNumber(client_data.account_number, vClientData, client_data))
     {
         cout << "Account Number already exists, please enter another account number? ";
         getline(cin >> ws, client_data.account_number);
@@ -311,6 +312,13 @@ void printClientsData(vector<stClientData> vClientData)
     cout << "_________________________________________________________________________________________________________________\n";
 }
 
+enReadMenuOption ReadMenuOption()
+{
+    short option;
+    cin >> option;
+    return (enReadMenuOption)option;
+}
+
 void ShowMenu()
 {
     system("cls");
@@ -329,38 +337,39 @@ void ShowMenu()
 
 void PerformMainMenuOption()
 {
-    short option;
+    
     vector<stClientData> vClientData = LoadClientDataFromFile();
     ShowMenu();
-    cin >> option;
+    enReadMenuOption option;
+    option = ReadMenuOption();
     switch (option)
     {
-    case 1:
+    case ::Show_Client_List:
         system("cls");
         printClientsData(vClientData);
         EndOfMenuOption();
         break;
-    case 2:
+    case ::Add_New_Client:
         ShowOptionScreen("Add New Client Screen");
         AddClients();
         EndOfMenuOption();
         break;
-    case 3:
+    case ::Delete_Client:
         ShowOptionScreen("Delete Client Screen");
         DeleteClient(ReadAccountNumber(), vClientData);
         EndOfMenuOption();
         break;
-    case 4:
+    case ::Update_Client_Info:
         ShowOptionScreen("Update Client Info Screen");
         UpdateClient(ReadAccountNumber(), vClientData);
         EndOfMenuOption();
         break;
-    case 5:
+    case ::Find_Client:
         ShowOptionScreen("Find Client Screen");
         FindClient(ReadAccountNumber(), vClientData);
         EndOfMenuOption();
         break;
-    case 6:
+    case ::Exit:
         ShowOptionScreen("Program Ends :-)");
         EndOfMenuOption();
         exit(0);
@@ -368,7 +377,6 @@ void PerformMainMenuOption()
     default:
         break;
     }
-
 }
 
 int main() {
