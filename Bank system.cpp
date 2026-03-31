@@ -246,6 +246,7 @@ void printClientsData(vector<stClientData>& vClientData)
 
 void printClientsBalances(vector<stClientData>& vClientData)
 {
+    int TotalBalance = 0;
     cout << setw(60) << "Client List (" << vClientData.size() << ") Client(s).";
     cout << "\n_________________________________________________________________________________________________________________\n\n";
     cout << left << setw(28) << "| Account Number";
@@ -255,9 +256,11 @@ void printClientsBalances(vector<stClientData>& vClientData)
     for (stClientData& str : vClientData)
     {
         PrintBalanceRecord(str);
+        TotalBalance += str.account_balance;
         cout << "\n";
     }
     cout << "_________________________________________________________________________________________________________________\n";
+    cout << setw(90) << "Total Balance : " << TotalBalance << endl;
 }
 
 void AddNewClient()
@@ -454,8 +457,7 @@ void PerformTransactinsMenuOption()
         EndOfTransactionMenuOption();
         break;
     case enTransactionMenuOption::main_menu:
-		system("cls");
-        ShowMainMenu();
+        return;
         break;
     default:
         break;
@@ -466,7 +468,7 @@ void ShowTransactionMenu()
 {
     system("cls");
     cout << "\n===========================================\n";
-    cout << "\t\Transactions Menu Screen";
+    cout << "\t\tTransactions Menu Screen";
     cout << "\n===========================================\n";
     cout << "\t[1] Deposit.\n";
     cout << "\t[2] Withdraw.\n";
