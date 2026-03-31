@@ -7,7 +7,6 @@
 
 using namespace std;
 
-void ShowMainMenu();
 void ShowTransactionMenu();
 
 static const string SEPERATOR = "#//#";
@@ -225,7 +224,7 @@ void PrintBalanceRecord(stClientData client_data)
     cout << "| " << setw(23) << client_data.account_balance;
 }
 
-void printClientsData(vector<stClientData>& vClientData)
+void ShowClientsScreen(vector<stClientData>& vClientData)
 {
     cout << "\t\t\t\t\t Client List (" << vClientData.size() << ") Client(s).";
     cout << "\n_________________________________________________________________________________________________________________\n\n";
@@ -243,7 +242,7 @@ void printClientsData(vector<stClientData>& vClientData)
     cout << "_________________________________________________________________________________________________________________\n";
 }
 
-void printClientsBalances(vector<stClientData>& vClientData)
+void ShowTotalBalances(vector<stClientData>& vClientData)
 {
     double TotalBalance = 0;
     cout << "\t\t\t\t\tClient List (" << vClientData.size() << ") Client(s).";
@@ -259,7 +258,7 @@ void printClientsBalances(vector<stClientData>& vClientData)
         cout << "\n";
     }
     cout << "_________________________________________________________________________________________________________________\n";
-    cout << setw(90) << "Total Balance : " << TotalBalance << endl;
+    cout <<  "\t\t\t\t\tTotal Balance : " << TotalBalance << endl;
 }
 
 void AddNewClient()
@@ -376,7 +375,7 @@ void FindClient(string account_number, vector<stClientData> vClientData)
         cout << "\nClient with Account Number (" << account_number << ") is Not Found!\n";
 }
 
-void DepositBalanceToClientByAccountNumber(string AccountNumber, vector<stClientData>& vClient, double& amount)
+void DepositBalanceToClientByAccountNumber(string AccountNumber, vector<stClientData>& vClient, double amount)
 {
     cout << "\nAre you sure you want perform this transaction? (y)Yes (othewise)No? ";
     char answer;
@@ -419,8 +418,8 @@ void Withdraw(string AccountNumber, vector<stClientData>& vClient)
         AccountNumber = ReadAccountNumber();
     }
     PrintAccountCard(client);
-    double amount = -ReadDepositAmount();
-    DepositBalanceToClientByAccountNumber(AccountNumber, vClient, amount);
+    double amount = ReadDepositAmount();
+    DepositBalanceToClientByAccountNumber(AccountNumber, vClient, amount * -1);
 }
 
 enReadMenuOption ReadMenuOption()
@@ -455,7 +454,7 @@ void PerformTransactinsMenuOption()
         break;
     case enTransactionMenuOption::show_balance:
         system("cls");
-        printClientsBalances(vClientData);
+        ShowTotalBalances(vClientData);
         GoBackToTransactionMenuOption();
         break;
     case enTransactionMenuOption::main_menu:
@@ -490,7 +489,7 @@ void PerformMainMenuOption()
     {
     case enReadMenuOption::Show_Client_List:
         system("cls");
-        printClientsData(vClientData);
+        ShowClientsScreen(vClientData);
         GoBackToMainMenuOption();
         break;
     case enReadMenuOption::Add_New_Client:
