@@ -59,13 +59,13 @@ double ReadWithdrawAmount(stClientData Client)
     return amount;
 }
 
-void EndOfMainMenuOption()
+void GoBackToMainMenuOption()
 {
     cout << "\nPress any Key To Continue...";
     system("pause>0");
 }
 
-void EndOfTransactionMenuOption()
+void GoBackToTransactionMenuOption()
 {
     cout << "\nPress any Key To Continue...";
     system("pause>0");
@@ -376,48 +376,51 @@ void FindClient(string account_number, vector<stClientData> vClientData)
         cout << "\nClient with Account Number (" << account_number << ") is Not Found!\n";
 }
 
-void Deposit(string AccountNumber, vector<stClientData>& vClient)
+void DepositBalanceToClientByAccountNumber(string AccountNumber, vector<stClientData>& vClient, double& amount)
 {
-	stClientData client;
-    if (FindClientByAccountNumber(AccountNumber, vClient, client))
+    cout << "\nAre you sure you want perform this transaction? (y)Yes (othewise)No? ";
+    char answer;
+    cin >> answer;
+    cin.ignore();
+    if (answer == 'y' || answer == 'Y')
     {
-        PrintAccountCard(client);
-        double amount = ReadDepositAmount();
         for (stClientData& ClientData : vClient)
         {
-            if (client.account_number == ClientData.account_number)
+            if (AccountNumber == ClientData.account_number)
             {
                 ClientData.account_balance += amount;
+                SaveDataToFileFromStart(file_name, vClient);
+                cout << "\nDone Successfully, New Balance is: " << ClientData.account_balance;
                 break;
             }
         }
-		SaveDataToFileFromStart(file_name, vClient);
-        cout << "\nAmount Deposited Successfully.\n";
     }
-    else
+}
+
+void Deposit(string AccountNumber, vector<stClientData>& vClient)
+{
+	stClientData client;
+    while (!FindClientByAccountNumber(AccountNumber, vClient, client))
+    {
 		cout << "\nClient with Account Number (" << AccountNumber << ") is Not Found!\n";
+		AccountNumber = ReadAccountNumber();
+    }
+    PrintAccountCard(client);
+    double amount = ReadDepositAmount();
+    DepositBalanceToClientByAccountNumber(AccountNumber, vClient, amount);
 }
 
 void Withdraw(string AccountNumber, vector<stClientData>& vClient)
 {
     stClientData client;
-    if (FindClientByAccountNumber(AccountNumber, vClient, client))
+    while (!FindClientByAccountNumber(AccountNumber, vClient, client))
     {
-        PrintAccountCard(client);
-        double amount = ReadWithdrawAmount(client);
-        for (stClientData& ClientData : vClient)
-        {
-            if (client.account_number == ClientData.account_number)
-            {
-                ClientData.account_balance -= amount;
-                break;
-            }
-        }
-        SaveDataToFileFromStart(file_name, vClient);
-        cout << "\nAmount Withdraw Successfully.\n";
-    }
-    else
         cout << "\nClient with Account Number (" << AccountNumber << ") is Not Found!\n";
+        AccountNumber = ReadAccountNumber();
+    }
+    PrintAccountCard(client);
+    double amount = -ReadDepositAmount();
+    DepositBalanceToClientByAccountNumber(AccountNumber, vClient, amount);
 }
 
 enReadMenuOption ReadMenuOption()
@@ -443,17 +446,17 @@ void PerformTransactinsMenuOption()
     case enTransactionMenuOption::deposit:
         ShowOptionScreen("Deposit Screen");
         Deposit(ReadAccountNumber(), vClientData);
-        EndOfTransactionMenuOption();
+        GoBackToTransactionMenuOption();
         break;
     case enTransactionMenuOption::withdraw:
         ShowOptionScreen("Withdraw Screen");
         Withdraw(ReadAccountNumber(), vClientData);
-        EndOfTransactionMenuOption();
+        GoBackToTransactionMenuOption();
         break;
     case enTransactionMenuOption::show_balance:
         system("cls");
         printClientsBalances(vClientData);
-        EndOfTransactionMenuOption();
+        GoBackToTransactionMenuOption();
         break;
     case enTransactionMenuOption::main_menu:
         return;
@@ -467,7 +470,7 @@ void ShowTransactionMenu()
 {
     system("cls");
     cout << "\n===========================================\n";
-    cout << "\t\tTransactions Menu Screen";
+    cout << "\tTransactions Menu Screen";
     cout << "\n===========================================\n";
     cout << "\t[1] Deposit.\n";
     cout << "\t[2] Withdraw.\n";
@@ -488,27 +491,27 @@ void PerformMainMenuOption()
     case enReadMenuOption::Show_Client_List:
         system("cls");
         printClientsData(vClientData);
-        EndOfMainMenuOption();
+        GoBackToMainMenuOption();
         break;
     case enReadMenuOption::Add_New_Client:
         ShowOptionScreen("Add New Client Screen");
         AddClients();
-        EndOfMainMenuOption();
+        GoBackToMainMenuOption();
         break;
     case enReadMenuOption::Delete_Client:
         ShowOptionScreen("Delete Client Screen");
         DeleteClient(ReadAccountNumber(), vClientData);
-        EndOfMainMenuOption();
+        GoBackToMainMenuOption();
         break;
     case enReadMenuOption::Update_Client_Info:
         ShowOptionScreen("Update Client Info Screen");
         UpdateClient(ReadAccountNumber(), vClientData);
-        EndOfMainMenuOption();
+        GoBackToMainMenuOption();
         break;
     case enReadMenuOption::Find_Client:
         ShowOptionScreen("Find Client Screen");
         FindClient(ReadAccountNumber(), vClientData);
-        EndOfMainMenuOption();
+        GoBackToMainMenuOption();
         break;
     case enReadMenuOption::Transaction_Menu:
 		system("cls");
