@@ -13,6 +13,7 @@ static const string SEPERATOR = "#//#";
 static const string file_name = "clients data file.txt";
 enum enReadMenuOption { Show_Client_List=1,Add_New_Client,Delete_Client, Update_Client_Info,Find_Client, Transaction_Menu, Exit};
 enum enTransactionMenuOption { deposit = 1, withdraw, show_balance, main_menu };
+
 struct stClientData
 {
     string account_number;
@@ -179,10 +180,9 @@ bool FindClientByAccountNumber(string account_number, vector<stClientData> vClie
     return false;
 }
 
-stClientData ReadClientData()
+stClientData ReadClientData(vector<stClientData> vClientData)
 {
     stClientData client_data;
-    vector<stClientData> vClientData = LoadClientDataFromFile();
     cout << "Enter Account Number? ";
     getline(cin >> ws, client_data.account_number);
     while (FindClientByAccountNumber(client_data.account_number, vClientData, client_data))
@@ -190,12 +190,6 @@ stClientData ReadClientData()
         cout << "Account Number already exists, please enter another account number? ";
         getline(cin >> ws, client_data.account_number);
     }
-    while (client_data.account_number.empty())
-    {
-        cout << "Account Number can't be empty, please enter account number? ";
-        getline(cin >> ws, client_data.account_number);
-    }
-
     cout << "Enter PinCode? ";
     getline(cin, client_data.pin_code);
     cout << "Enter Name? ";
@@ -261,21 +255,21 @@ void ShowTotalBalances(vector<stClientData>& vClientData)
     cout <<  "\t\t\t\t\tTotal Balance : " << TotalBalance << endl;
 }
 
-void AddNewClient()
+void AddNewClient(vector<stClientData> vClientData)
 {
     cout << "Adding New Client\n\n";
 
     stClientData client_data;
-    client_data = ReadClientData();
+    client_data = ReadClientData(vClientData);
     SaveNewDataToFile(file_name, convertRecordToLine(client_data, SEPERATOR));
 }
 
-void AddClients()
+void AddClients(vector<stClientData> vClientData)
 {
     char ch;
     do
     {
-        AddNewClient();
+        AddNewClient(vClientData);
         cout << "Client Added Successfully, do you want to add more clients?(y)Yes (otherwise)No";
         cin >> ch;
     } while (ch == 'y' || ch == 'Y');
@@ -494,7 +488,7 @@ void PerformMainMenuOption()
         break;
     case enReadMenuOption::Add_New_Client:
         ShowOptionScreen("Add New Client Screen");
-        AddClients();
+        AddClients(vClientData);
         GoBackToMainMenuOption();
         break;
     case enReadMenuOption::Delete_Client:
