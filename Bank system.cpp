@@ -63,7 +63,6 @@ void EndOfMainMenuOption()
 {
     cout << "\nPress any Key To Continue...";
     system("pause>0");
-    ShowMainMenu();
 }
 
 void EndOfTransactionMenuOption()
@@ -228,7 +227,7 @@ void PrintBalanceRecord(stClientData client_data)
 
 void printClientsData(vector<stClientData>& vClientData)
 {
-    cout << setw(60) << "Client List (" << vClientData.size() << ") Client(s).";
+    cout << "\t\t\t\t\t Client List (" << vClientData.size() << ") Client(s).";
     cout << "\n_________________________________________________________________________________________________________________\n\n";
     cout << left << setw(20) << "| Account Number";
     cout << setw(15) << "| Pin Code";
@@ -246,8 +245,8 @@ void printClientsData(vector<stClientData>& vClientData)
 
 void printClientsBalances(vector<stClientData>& vClientData)
 {
-    int TotalBalance = 0;
-    cout << setw(60) << "Client List (" << vClientData.size() << ") Client(s).";
+    double TotalBalance = 0;
+    cout << "\t\t\t\t\tClient List (" << vClientData.size() << ") Client(s).";
     cout << "\n_________________________________________________________________________________________________________________\n\n";
     cout << left << setw(28) << "| Account Number";
     cout << setw(55) << "| Name";
