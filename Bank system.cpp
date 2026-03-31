@@ -412,7 +412,7 @@ void Withdraw(string AccountNumber, vector<stClientData>& vClient)
         AccountNumber = ReadAccountNumber();
     }
     PrintAccountCard(client);
-    double amount = ReadDepositAmount();
+    double amount = ReadWithdrawAmount(client);
     DepositBalanceToClientByAccountNumber(AccountNumber, vClient, amount * -1);
 }
 
